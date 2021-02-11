@@ -104,9 +104,8 @@ class HTTPClient(object):
         return HTTPResponse(code, body)
 
     def POST(self, url, args=None):
-
+            
         host, port, path = self.get_host_port_path(url)
-
 
         data_send = "POST " + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\nAccept: */*\r\nConnection: close\r\nUser-Agent: Assignment/2\r\n"
 
@@ -128,6 +127,8 @@ class HTTPClient(object):
             data_send += "Content-Length: 0"
         
         data_send += '\r\n\r\n'
+
+        print(data_send)
 
         self.connect(host, port)
         self.sendall(data_send)
@@ -154,6 +155,19 @@ if __name__ == "__main__":
         sys.exit(1)
     elif (len(sys.argv) == 3):
         response = client.command( sys.argv[2], sys.argv[1] )
+        print("Code:", response.code)
+        print("Body:")
+        print(response.body)
+    elif (len(sys.argv) == 4):
+
+        # Split data string into dict
+        args_split = sys.argv[3].split('&')
+        args = {}
+        for arg in args_split:
+            key, value = arg.split('=')
+            args[key] = value
+        
+        response = client.command( sys.argv[2], sys.argv[1], args )
         print("Code:", response.code)
         print("Body:")
         print(response.body)
