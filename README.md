@@ -18,3 +18,13 @@ examples thus some of the code is Copyright © 2001-2013 Python
 Software Foundation; All Rights Reserved under the PSF license (GPL
 compatible) http://docs.python.org/2/library/socketserver.html
 
+## Usage
+- defaults to GET URL:
+    - `python3 httpclient.py URL`
+- GET URL:
+    - `python3 httpclient.py GET URL`
+- POST to URL with no data:
+    - `python3 httpclient.py POST URL`
+- POST to URL with DATA:
+    - `python3 httpclient.py POST URL DATA`
+    - example: `python3 httpclient.py POST webdocs.cs.ualberta.ca/~hindle1/1.py "a=b&b=c"`
