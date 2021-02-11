@@ -24,6 +24,7 @@ import socket
 import re
 # you may use urllib to encode data appropriately
 import urllib.parse
+from urllib.parse import quote
 
 def help():
     print("httpclient.py [GET/POST] [URL]\n")
@@ -89,7 +90,6 @@ class HTTPClient(object):
         host, port, path = self.get_host_port_path(url)
 
         data_send = "GET " + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\nAccept: */*\r\nConnection: close\r\n\r\n"
-        # data_send = "GET " + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\nAccept: */*\r\n\r\n"
 
         self.connect(host, port)
         self.sendall(data_send)
@@ -98,13 +98,6 @@ class HTTPClient(object):
 
         code = self.get_code(data_recv)
         body = self.get_body(data_recv)
-        
-        # headers = self.get_headers(data_recv)
-        # print("Status Code: " + str(code))
-        # print("\nHeaders:")
-        # print(headers)
-        # print("\nBody:")
-        # print(body)
 
         self.close()
 
@@ -115,8 +108,26 @@ class HTTPClient(object):
         host, port, path = self.get_host_port_path(url)
 
 
-        data_send = "POST " + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\nAccept */*\r\nConnection: close\r\n\r\n"
-        # data_send = "POST " + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\nAccept */*\r\n\r\n"
+        data_send = "POST " + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\nAccept: */*\r\nConnection: close\r\nUser-Agent: Assignment/2\r\n"
+
+        if args is not None:
+
+            arg_string = ""
+            for i, (key, value) in enumerate(args.items()):
+                arg_string += quote(key) + '=' + quote(value)
+                if i != len(args)-1:
+                    arg_string += '&'
+            
+            content_length = len(arg_string)
+
+            data_send += "Content-Length: " + str(content_length) + "\r\n"
+            data_send += "Content-Type: application/x-www-form-urlencoded\r\n\r\n"
+
+            data_send += arg_string
+        else:
+            data_send += "Content-Length: 0"
+        
+        data_send += '\r\n\r\n'
 
         self.connect(host, port)
         self.sendall(data_send)
